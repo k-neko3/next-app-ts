@@ -1,34 +1,298 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Next.js 開発環境テンプレート。
 
-## Getting Started
+## 構成
 
-First, run the development server:
+- Next.js
+- Tailwind CSS
+- Sass
+- Eslint（Next.jsに付属）
+- Prettier
+- Stylelint
+
+バージョンはpackage.jsonを確認してください。
+
+エディターの設定は各自で設定してください。
+
+参考としてVSCodeの設定を載せています。
+
+## Next.js
 
 ```bash
-npm run dev
-# or
-yarn dev
+npx create-next-app@latest --ts
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+    "next": "12.1.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+    "@types/node": "17.0.18",
+    "@types/react": "17.0.39",
+    "eslint": "8.9.0",
+    "eslint-config-next": "12.1.0",
+    "typescript": "4.5.5"
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+### srcフォルダを作りpagesとstylesを移動
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+```
+├── src
+│   ├── pages
+│   │   ├── _app.tsx
+│   │   ├── api
+│   │   │   └── hello.ts
+│   │   └── index.tsx
+│   └── styles
+│       ├── Home.module.scss
+│       └── globals.scss
+```
 
-## Learn More
+```diff
+//package.json
+  "scripts": {
++    "lint": "next lint --dir src",
+-    "lint": "next lint",
+  },
+```
 
-To learn more about Next.js, take a look at the following resources:
+### パスのalias
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```json
+//tsconfig.json
+{
+  "compilerOptions": {
+  ~~~
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+  },
+  ~~~
+}
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```diff
++ import "@/styles/global.scss";
+- import '../styles/globals.scss'
+```
 
-## Deploy on Vercel
+## Sass
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### install
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```bash
+npm i sass -D
+```
+
+    "sass": "^1.49.8",
+
+### 拡張子変更
+
+```diff
+//ファイル名変更
++ globals.scss
++ Home.module.scss
+
+- globals.css
+- Home.module.scss
+```
+
+## Tailwind CSS
+
+### install
+
+```bash
+npm i -D tailwindcss postcss autoprefixer
+```
+
+    "autoprefixer": "^10.4.2",
+    "postcss": "^8.4.6",
+    "tailwindcss": "^3.0.23",
+
+### 設定
+
+```bash
+npx tailwindcss init -p
+```
+
+```js
+//tailwind.config.js
+module.exports = {
+  mode: 'jit',
+  content: [
+    '.src/pages/**/*.{js,ts,jsx,tsx}',
+    '.src/components/**/*.{js,ts,jsx,tsx}',
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
+```
+
+```css
+//globals.scss
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+## Prettier, plugin for Tailwind CSS
+
+### install
+
+```bash
+npm install -D prettier prettier-plugin-tailwindcss eslint-config-prettier
+```
+
+    "prettier": "^2.5.1",
+    "prettier-plugin-tailwindcss": "^0.1.7",
+    "eslint-config-prettier": "^8.4.0",
+
+### 設定
+
+参考：[Prettier Options](https://prettier.io/docs/en/options.html)
+
+```json
+//.prettierrc.json
+{
+  "printWidth": 100,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": false,
+  "quoteProps": "as-needed",
+  "jsxSingleQuote": false,
+  "trailingComma": "es5",
+  "bracketSpacing": true,
+  "bracketSameLine": false,
+  "arrowParens": "always",
+  "proseWrap": "preserve",
+  "htmlWhitespaceSensitivity": "css",
+  "endOfLine": "lf",
+  "embeddedLanguageFormatting": "off"
+}
+```
+
+```json
+//.prettierignore
+*.md
+```
+
+```json
+//.eslintrc.json
+{
+  "extends": ["next/core-web-vitals", "prettier"]
+}
+```
+
+### 【参考】vscode拡張機能設定
+
+拡張機能：[Prettier Formatter for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+
+```json
+//settings.json
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "[markdown]": {
+    "editor.formatOnSave": false
+  },
+  "eslint.validate": ["html", "javascriptreact", "typescriptreact"],
+```
+
+マークダウンファイルをprettierで整形すると、全角文字と半角文字の間に全てスペースが入るため、マークダウンを除外している。
+
+`.prettierignore`だけあれば`setting.json`の記述はなくてもvscodeでファイル保存時にマークダウンは無視される。
+
+ただし、vscodeのコマンド（ctrl + shift + pで選択できるもの）を使うと、設定をしていても整形される。
+
+
+## Stylelint
+
+参考：[Stylelint Getting started](https://github.com/stylelint/stylelint/blob/main/docs/user-guide/get-started.md)
+
+```bash
+npm i stylelint stylelint-config-prettier-scss stylelint-config-standard-scss stylelint-config-recess-order -D
+```
+
+```json
+//.stylelintrc.json
+{
+  "extends": [
+    "stylelint-config-standard-scss",
+    "stylelint-config-recess-order",
+    "stylelint-config-prettier-scss"
+  ],
+  "rules": {
+    "scss/at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": ["apply", "layer", "responsive", "screen", "tailwind"]
+      }
+    ]
+  }
+}
+```
+
+### 【参考】vscode拡張機能設定
+
+
+
+拡張機能：[Stylelint : VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=stylelint.vscode-stylelint)
+
+```json
+//settings.json
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "[markdown]": {
+    "editor.formatOnSave": false
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.fixAll.stylelint": true
+  },
+  "eslint.validate": ["html", "javascriptreact", "typescriptreact"],
+  "css.validate": false,
+  "scss.validate": false,
+  "stylelint.enable": true,
+  "stylelint.validate": ["css", "scss"],
+```
+
+```json
+//package.json
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint --dir src",
+    "slint": "stylelint **/*.{css,scss,sass}"
+  },
+```
+
+## 詳細
+
+- Next.js
+  - create-next-appをTypeScriptで
+  - srcフォルダ作成
+  - package.json"scripts"のlintコマンドを修正
+  - tsconfig.jsonへパスのalias設定を追加
+- Sass
+  - cssファイルの拡張子をscssに変更
+- TailwindCSS
+  - tailwind.config.jsを作成
+    - JITモード追加
+    - contentに該当ファイルを指定
+- Eslint
+  - .eslintrc.jsonにPrettierを追加
+- Prettier
+  - Tailwind CSS用のプラグインを追加
+  - Prettierと競合するEslintのルールをオフにする設定を追加
+  - .prettierrc.jsonを作成
+  - .prettierignoreを作成
+    - マークダウンファイルを除外設定
+- Stylelint
+  - Scss用の設定を追加
+  - prettierと競合するStylelintのルールをオフにする設定を追加
+  - cssのプロパティを自動で並び変える設定を追加
+  - package.jsonにコマンドを追加
+  - .stylelintrc.jsonを作成
+    - 各種プラグインを設定
+    - Tailwind CSSの除外設定
