@@ -1,10 +1,11 @@
-Next.js 開発環境テンプレート。
+Next.js 開発環境用テンプレート。
 
 ## 構成
 
 - Next.js
 - Tailwind CSS
 - Sass
+
 - Eslint（Next.jsに付属）
 - Prettier
 - Stylelint
@@ -46,7 +47,7 @@ npx create-next-app@latest --ts
 ```
 
 ```diff
-//package.json
+--package.json
   "scripts": {
 +    "lint": "next lint --dir src",
 -    "lint": "next lint",
@@ -55,17 +56,17 @@ npx create-next-app@latest --ts
 
 ### パスのalias
 
-```json
+```js
 //tsconfig.json
 {
   "compilerOptions": {
-  ~~~
+  
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     },
   },
-  ~~~
+  
 }
 ```
 
@@ -151,7 +152,7 @@ npm install -D prettier prettier-plugin-tailwindcss eslint-config-prettier
 
 参考：[Prettier Options](https://prettier.io/docs/en/options.html)
 
-```json
+```js
 //.prettierrc.json
 {
   "printWidth": 100,
@@ -172,12 +173,12 @@ npm install -D prettier prettier-plugin-tailwindcss eslint-config-prettier
 }
 ```
 
-```json
+```js
 //.prettierignore
 *.md
 ```
 
-```json
+```js
 //.eslintrc.json
 {
   "extends": ["next/core-web-vitals", "prettier"]
@@ -188,7 +189,7 @@ npm install -D prettier prettier-plugin-tailwindcss eslint-config-prettier
 
 拡張機能：[Prettier Formatter for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
-```json
+```js
 //settings.json
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
@@ -213,7 +214,7 @@ npm install -D prettier prettier-plugin-tailwindcss eslint-config-prettier
 npm i stylelint stylelint-config-prettier-scss stylelint-config-standard-scss stylelint-config-recess-order -D
 ```
 
-```json
+```js
 //.stylelintrc.json
 {
   "extends": [
@@ -238,7 +239,7 @@ npm i stylelint stylelint-config-prettier-scss stylelint-config-standard-scss st
 
 拡張機能：[Stylelint : VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=stylelint.vscode-stylelint)
 
-```json
+```js
 //settings.json
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
@@ -256,7 +257,7 @@ npm i stylelint stylelint-config-prettier-scss stylelint-config-standard-scss st
   "stylelint.validate": ["css", "scss"],
 ```
 
-```json
+```js
 //package.json
   "scripts": {
     "dev": "next dev",
