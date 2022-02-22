@@ -5,7 +5,6 @@ Next.js 開発環境用テンプレート。
 - Next.js
 - Tailwind CSS
 - Sass
-
 - Eslint（Next.jsに付属）
 - Prettier
 - Stylelint
@@ -47,7 +46,7 @@ npx create-next-app@latest --ts
 ```
 
 ```diff
---package.json
+－package.json
   "scripts": {
 +    "lint": "next lint --dir src",
 -    "lint": "next lint",
